@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Produtos - Urban Farm</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar {
+            margin-bottom: 2rem;
+        }
+        .product-card {
+            margin-bottom: 2rem;
+        }
+        .product-card img {
+            height: 200px;
+            object-fit: cover;
+        }
+        .product-title {
+            font-size: 1.25rem;
+            font-weight: 500;
+        }
+        .product-price {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Urban Farm</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <form class="form-inline my-2 my-lg-0 ml-auto">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+            <ul class="navbar-nav ml-3">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Cart 🛒</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <!-- Sidebar com filtros (pode ser adicionado depois) -->
+                <div class="sidebar">
+                    <h5>Filtros</h5>
+                    <div class="form-group">
+                        <label for="priceRange">Faixa de Preço</label>
+                        <input type="range" class="form-control-range" id="priceRange">
+                    </div>
+                    <div class="form-group">
+                        <label for="categorySelect">Categoria</label>
+                        <select class="form-control" id="categorySelect">
+                            <option>Todos</option>
+                            <option>Frutas</option>
+                            <option>Vegetais</option>
+                            <option>Legumes</option>
+                            <option>Orgãnicos</option>
+                        </select>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="organicCheck">
+                        <label class="form-check-label" for="organicCheck">
+                            Orgãnicos
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="promoCheck">
+                        <label class="form-check-label" for="promoCheck">
+                            Promoções
+                        </label>
+                    </div>
+                    <button class="btn btn-outline-primary btn-block mt-4">Aplicar Filtros</button>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-md-4 product-card">
+                        <div class="card">
+                            <img src="./assets/rabanete.png" class="card-img-top" alt="Rabanete">
+                            <div class="card-body">
+                                <h5 class="product-title">Rabanete</h5>
+                                <p class="product-description">Descrição do produto</p>
+                                <p class="product-price">$XX.YY</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 product-card">
+                        <div class="card">
+                            <img src="./assets/maca.png" class="card-img-top" alt="MaÃ§Ã£">
+                            <div class="card-body">
+                                <h5 class="product-title">Maçã</h5>
+                                <p class="product-description">Descrição do produto</p>
+                                <p class="product-price">$XX.YY</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 product-card">
+                        <div class="card">
+                            <img src="./assets/pera.png" class="card-img-top" alt="Pera">
+                            <div class="card-body">
+                                <h5 class="product-title">Pera</h5>
+                                <p class="product-description">Descrição do produto</p>
+                                <p class="product-price">$XX.YY</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 product-card">
+                        <div class="card">
+                            <img src="./assets/melancia.png" class="card-img-top" alt="Melancia">
+                            <div class="card-body">
+                                <h5 class="product-title">Melancia</h5>
+                                <p class="product-description">Descrição do produto</p>
+                                <p class="product-price">$XX.YY</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Adicione mais produtos aqui -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
