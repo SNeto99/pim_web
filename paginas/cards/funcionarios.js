@@ -1,4 +1,3 @@
-
 $(document).ready(async () => {
     // Carrega os produtos antes de montar a tabela e adicionar ao DOM
     await carregarProdutos();
@@ -76,7 +75,9 @@ function dataTable_produtos(produtos) {
             {
                 data: "linkImg", // Supondo que exista uma propriedade 'imagem' nos produtos
                 render: function (data) {
-                    return `<img src="${data}" alt="Imagem do Produto" style="width: 50px; height: 50px;">`;
+                    return data
+                        ? `<img src="${data}" alt="Imagem do Produto" style="width: 50px; height: 50px;">`
+                        : `<span class="fa-regular fa-image fa-xl" style="padding-left:12px"></span>`;
                 },
             },
             { data: "nome" },
@@ -126,11 +127,45 @@ function editarProduto(produto) {
 
 function deletarProduto(produto) {
     // Lógica para deletar o produto
-    console.log("Deletar produto:", produto);
+    console.log(produto);
+    Swal.fire({
+        title: `Voce tem certeza que deseja deletar este item?`,
+        text: "Essa ação não é reversivel",
+        // icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        confirmButtonText: "Deletar",
+        cancelButtonColor: "#3085d6",
+        cancelButtonText: "Cancelar",
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "DELETE",
+                url: `${host}/products/deleteProduct/${produto.id}`,
+                contentType: "application/json",
+            })
+                .done(function (response) {
+                    console.log(response);
+                    carregarProdutos();
+                })
+                .fail(function (error) {
+                    console.error(error);
+                });
+        }
+    });
 }
 
 // Função para abrir o modal e preencher os dados
 function abrirModalProduto(produto = {}) {
+
+    var modalInstance = bootstrap.Modal.getInstance($("#modalProduto")[0]);
+
+    // Verifica se já existe uma instância do modal e a descarta
+    if (modalInstance) {
+        modalInstance.dispose();
+    }
+
+
     // Se o produto estiver vazio, estamos adicionando um novo item
     const isEdit = produto && produto.id;
 
@@ -160,9 +195,9 @@ $("#salvarProduto").on("click", function () {
 
     let type = "";
     let url = "";
-    if (produto.id) {
+    if (produto.idProduto) {
         type = "PUT";
-        url = `${host}/products/editProductName/${produto.id}`;
+        url = `${host}/products/editProduct/${produto.idProduto}`;
     } else {
         type = "POST";
         url = `${host}/products/newProduct`;
@@ -170,12 +205,12 @@ $("#salvarProduto").on("click", function () {
     $.ajax({
         type: type,
         url: url,
-        data: produto,
-        dataType: "json",
+        data: JSON.stringify(produto),
+        contentType: "application/json",
     })
         .done(function (response) {
             console.log(response);
-            alert("foi");
+            carregarProdutos();
         })
         .fail(function (error) {
             console.error(error);

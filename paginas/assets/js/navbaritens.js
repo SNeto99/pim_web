@@ -2,8 +2,9 @@ const navbarItems = [
     {
         nome: "Início",
         tipo: "item",
-        funcao: function () {
-            getHtml("./teste.html")
+        funcao: async function () {
+            const html = await getHtml("teste.html")
+            $("#principal").html(html)
         },
     },
     {

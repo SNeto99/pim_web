@@ -36,9 +36,9 @@ class ProductsController {
 
 
     static newProduct(req, res) {
-        const { nome, qnt } = req.body;
+        const { nome, qnt, linkImg } = req.body;
 
-        Products.newProduct(nome, qnt)
+        Products.newProduct(nome, qnt, linkImg)
             .then((idProduto) =>
                 res.status(200).json({ status: "ok", idProduto: idProduto })
             )
@@ -49,10 +49,11 @@ class ProductsController {
             );
     }
 
-    static editProductname(req, res) {
+    static editProduct(req, res) {
         const idProduto = req.params.id;
-        const { nome } = req.body;
-        Products.editProductname(idNota, texto)
+        const { nome, qnt, linkImg } = req.body;
+
+        Products.editProduct(idProduto, nome, qnt, linkImg)
             .then((affectedRows) => {
                 affectedRows
                 ? res.status(200).json({ status: "ok" })

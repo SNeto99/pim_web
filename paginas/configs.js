@@ -1,7 +1,8 @@
 
 
-const host = "http://192.168.0.16:3005"
-// const host = "";
+// const host = "http://192.168.50.99:3005"
+// const host = "http://192.168.0.16:3005";
+const host = "";
 
 
 
