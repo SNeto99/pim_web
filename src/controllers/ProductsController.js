@@ -20,8 +20,8 @@ class ProductsController {
     }
 
     static getProduct(req, res) {
-        const productId = req.params.id;
-        Products.getProduct(productId)
+        const idProduto = req.params.id;
+        Products.getProduct(idProduto)
             .then((result) =>
                 result
                     ? res.status(200).json(result)
@@ -36,11 +36,11 @@ class ProductsController {
 
 
     static newProduct(req, res) {
-        const { nome, qnt } = req.body;
+        const { nome, qnt, linkImg } = req.body;
 
-        Products.newProduct(nome, qnt)
-            .then((productId) =>
-                res.status(200).json({ status: "ok", productId: productId })
+        Products.newProduct(nome, qnt, linkImg)
+            .then((idProduto) =>
+                res.status(200).json({ status: "ok", idProduto: idProduto })
             )
             .catch((error) =>
                 res
@@ -49,10 +49,11 @@ class ProductsController {
             );
     }
 
-    static editProductname(req, res) {
-        const productId = req.params.id;
-        const { nome } = req.body;
-        Products.editProductname(idNota, texto)
+    static editProduct(req, res) {
+        const idProduto = req.params.id;
+        const { nome, qnt, linkImg } = req.body;
+
+        Products.editProduct(idProduto, nome, qnt, linkImg)
             .then((affectedRows) => {
                 affectedRows
                 ? res.status(200).json({ status: "ok" })
@@ -66,8 +67,8 @@ class ProductsController {
     }
 
     static deleteProduct(req, res) {
-        const productId = req.params.id;
-        Products.deleteProduct(productId)
+        const idProduto = req.params.id;
+        Products.deleteProduct(idProduto)
             .then((affectedRows) =>
                 affectedRows
                     ? res.status(200).json({ status: "ok" })

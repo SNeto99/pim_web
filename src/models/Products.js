@@ -5,7 +5,7 @@ class Products {
     static getProducts() {
         return new Promise((resolve, reject) => {
             banco.query(
-                "SELECT * FROM produtos ORDER BY nome",
+                "SELECT * FROM produtos",
                 (err, results, fields) => {
                     if (err) {
                         console.error("Erro ao consultar banco de dados:", err);
@@ -33,11 +33,11 @@ class Products {
         });
     }
 
-    static newProduct(nome, qnt, linkImg = null) {
+    static newProduct(nome, qnt = 0, linkImg = null) {
         return new Promise((resolve, reject) => {
             banco.query(
-                "INSERT INTO produtos (nome, qnt) VALUES (?, ?)",
-                [nome, qnt],
+                "INSERT INTO produtos (nome, quantidade, linkImg) VALUES (?, ?, ?)",
+                [nome, qnt, linkImg],
                 (err, results, fields) => {
                     if (err) {
                         console.error("Erro ao inserir dados:", err);
@@ -49,19 +49,49 @@ class Products {
         });
     }
 
-    static editProductname(id, nome) {
+    static editProduct(id, nome, qnt, linkImg) {
         return new Promise((resolve, reject) => {
-            banco.query(
-                "UPDATE produtos SET nome = ? WHERE id = ?",
-                [nome, id],
-                (err, results, fields) => {
-                    if (err) {
-                        console.error("Erro ao atualizar dados:", err);
-                        reject(err);
-                    }
-                    resolve(results.affectedRows);
+            
+            const columns = [
+                { name: "nome", value: nome },
+                { name: "quantidade", value: qnt },
+                { name: "linkImg", value: linkImg },
+            ].filter((col) => col.value != null); 
+
+            
+            if (columns.length === 0) {
+                return reject(new Error("Nenhum dado a ser atualizado."));
+            }
+
+            
+            const colsAtualizar = columns
+                .map((col) => `${col.name} = ?`)
+                .join(", ");
+
+            
+            const values = columns.map((col) => col.value);
+
+            
+            const sql = `
+            UPDATE 
+                produtos 
+            SET 
+                ${colsAtualizar} 
+            WHERE 
+                id = ?
+        `;
+
+            
+            values.push(id);
+
+            
+            banco.query(sql, values, (err, results, fields) => {
+                if (err) {
+                    console.error("Erro ao atualizar dados:", err);
+                    reject(err);
                 }
-            );
+                resolve(results.affectedRows);
+            });
         });
     }
 

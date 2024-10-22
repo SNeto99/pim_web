@@ -10,11 +10,15 @@
         <!-- JavaScript do Bootstrap -->
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
         <!-- DataTables -->
-        <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+        <link
+            rel="stylesheet"
+            href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css"
+        />
         <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-        <!-- Seu script personalizado -->
-        <script src="./assets/navbaritens.js"></script>
-        <script src="configs.js"></script>
+        <!-- Sweet Alert -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 
         <!-- Link para o CSS do Bootstrap -->
         <link
@@ -22,7 +26,18 @@
             href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
         />
         <!-- Font Awesome Icons -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+            integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+        />
+
+        <!-- //* Seu script personalizado -->
+        <script src="assets/js/Modal.js"></script>
+        <script src="assets/js/navbaritens.js"></script>
+        <script src="configs.js"></script>
 
 
         <style>
@@ -30,6 +45,10 @@
                 background-color: #343a40;
                 color: #ffffff;
                 margin: 0; /* Remover margens padrão */
+            }
+
+            .modalbs {
+                color: black;
             }
             /* Sidebar para telas médias e maiores */
             .sidebar {
@@ -57,11 +76,39 @@
                 flex-grow: 1;
                 padding: 20px;
             }
+            @media (max-width: 768px) {
+                .content {
+                    flex-grow: 0;
+                    padding: 20px 0;
+                }
+            }
             /* Ocultar a sidebar em telas pequenas */
 
             /* Largura padrão para telas maiores */
             .offcanvas.offcanvas-start.sidebar {
-                width: 250px;
+                width: auto;
+            }
+            .full-label {
+                display: inline;
+            }
+            .mobile-label {
+                display: none;
+            }
+            @media (max-width: 768px) {
+                .full-label {
+                    display: none;
+                }
+                .mobile-label {
+                    display: inline;
+                }
+            }
+            .botaoAdd {
+                width: 40%;
+            }
+            @media (max-width: 768px) {
+                .botaoAdd {
+                    width: 100%;
+                }
             }
         </style>
     </head>
@@ -80,7 +127,7 @@
                 >
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <a class="navbar-brand" href="#">Minha Aplicação</a>
+                <a class="navbar-brand" href="#">Urban Farm</a>
             </div>
         </nav>
 
@@ -114,7 +161,7 @@
             </div>
 
             <!-- Conteúdo principal -->
-            <div id="principal" class="content">
+            <div id="principal" class="content container-fluid m-2">
                 <h1>Bem-vindo</h1>
                 <p>Este é o conteúdo principal da página.</p>
             </div>
@@ -123,7 +170,10 @@
 </html>
 <script>
     // Chame a função após o DOM estar carregado
-    $(document).ready(function () {
+    $(document).ready(async function () {
         adicionarItensNavbar(navbarItems);
+        
+        const html = await getHtml("cards/funcionarios.html")
+        $("#principal").html(html)
     });
 </script>
