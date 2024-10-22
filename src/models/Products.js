@@ -36,7 +36,7 @@ class Products {
     static newProduct(nome, qnt, linkImg = null) {
         return new Promise((resolve, reject) => {
             banco.query(
-                "INSERT INTO produtos (nome, qnt) VALUES (?, ?)",
+                "INSERT INTO produtos (nome, quantidade) VALUES (?, ?)",
                 [nome, qnt],
                 (err, results, fields) => {
                     if (err) {

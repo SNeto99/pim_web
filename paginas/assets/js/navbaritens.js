@@ -25,8 +25,9 @@ const navbarItems = [
                 },
             },
         ],
-        funcao: function () {
-            carregarProdutos()
+        funcao: async function () {
+            const html = await getHtml("cards/funcionarios.html")
+            $("#principal").html(html)
         },
     },
     {

@@ -20,8 +20,8 @@ class ProductsController {
     }
 
     static getProduct(req, res) {
-        const productId = req.params.id;
-        Products.getProduct(productId)
+        const idProduto = req.params.id;
+        Products.getProduct(idProduto)
             .then((result) =>
                 result
                     ? res.status(200).json(result)
@@ -39,8 +39,8 @@ class ProductsController {
         const { nome, qnt } = req.body;
 
         Products.newProduct(nome, qnt)
-            .then((productId) =>
-                res.status(200).json({ status: "ok", productId: productId })
+            .then((idProduto) =>
+                res.status(200).json({ status: "ok", idProduto: idProduto })
             )
             .catch((error) =>
                 res
@@ -50,7 +50,7 @@ class ProductsController {
     }
 
     static editProductname(req, res) {
-        const productId = req.params.id;
+        const idProduto = req.params.id;
         const { nome } = req.body;
         Products.editProductname(idNota, texto)
             .then((affectedRows) => {
@@ -66,8 +66,8 @@ class ProductsController {
     }
 
     static deleteProduct(req, res) {
-        const productId = req.params.id;
-        Products.deleteProduct(productId)
+        const idProduto = req.params.id;
+        Products.deleteProduct(idProduto)
             .then((affectedRows) =>
                 affectedRows
                     ? res.status(200).json({ status: "ok" })

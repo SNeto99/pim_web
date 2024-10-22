@@ -1,7 +1,7 @@
 
 
-// const url = "http://localhost:3001"
-const url = "";
+const host = "http://192.168.0.16:3005"
+// const host = "";
 
 
 
@@ -81,7 +81,7 @@ function adicionarItensNavbar(listaDeItens) {
 
 
 async function getHtml(link) {
-    console.log(link);
+    // console.log(link);
     try {
         const response = await fetch(link);
         if (!response.ok) {
@@ -89,105 +89,9 @@ async function getHtml(link) {
                 `Erro na requisição: ${response.status} ${response.statusText}`
             );
         }
-        const html = await response.text();
-        $("#principal").html(html);
+        const html = response.text();
+        return html;
     } catch (error) {
         console.error("Erro ao obter o HTML:", error);
     }
-}
-async function carregarProdutos() {
-    console.log("teste");
-    try {
-        const response = await $.ajax({
-            type: "GET",
-            url: `${url}/products/getProducts`,
-            dataType: "json",
-        });
-
-        console.log(response);
-
-        if (!response.error) {
-            montarCardProdutos(response.produtos);
-        } else {
-            console.error("Erro na resposta: ", response.message);
-        }
-    } catch (error) {
-        console.error("Erro ao carregar produtos: ", error);
-    }
-}
-
-function montarCardProdutos(produtos) {
-    const html = /*html*/`
-        <div class="card">
-            <div class='card-header'>Produtos cadastrados</div>
-            <div class='card-body'>
-                <table id="table-produtos" class="display">
-                    <thead>
-                        <tr>
-                            <th>Imagem</th>
-                            <th>Nome</th>
-                            <th>Quantidade</th>
-                            <th>Ações</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-    `;
-
-    // Adiciona o HTML ao container principal
-    $("#principal").html(html);
-
-    // Inicializa o DataTable com os produtos
-    $("#table-produtos").DataTable({
-        data: produtos,
-        columns: [
-            {
-                data: "linkImg", // Supondo que exista uma propriedade 'imagem' nos produtos
-                render: function (data) {
-                    return `<img src="${data}" alt="Imagem do Produto" style="width: 50px; height: 50px;">`;
-                },
-            },
-            { data: "nome" },
-            { data: "quantidade" },
-            {
-                data: null,
-                orderable: false,
-                render: function () {
-                    return /*html*/`
-                        <button class='btn btn-warning btn-editar'><span class='fa fa-pen'></span> Editar</button>
-                        <button class='btn btn-danger btn-deletar'><span class='fa fa-trash'></span> Deletar</button>
-                    `;
-                },
-            },
-        ],
-    });
-
-    // Adiciona eventos aos botões de ação
-    $("#table-produtos").on("click", ".btn-editar", function () {
-        const data = $("#table-produtos")
-            .DataTable()
-            .row($(this).parents("tr"))
-            .data();
-        editarProduto(data);
-    });
-
-    $("#table-produtos").on("click", ".btn-deletar", function () {
-        const data = $("#table-produtos")
-            .DataTable()
-            .row($(this).parents("tr"))
-            .data();
-        deletarProduto(data);
-    });
-}
-
-function editarProduto(produto) {
-    // Lógica para editar o produto
-    console.log("Editar produto:", produto);
-}
-
-function deletarProduto(produto) {
-    // Lógica para deletar o produto
-    console.log("Deletar produto:", produto);
 }
