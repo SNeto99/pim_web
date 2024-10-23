@@ -2,9 +2,16 @@
 
 // const host = "http://192.168.50.99:3005"
 // const host = "http://192.168.0.16:3005";
-const host = "";
+// const host = "http://192.168.0.14:3005";
+const host = ".";
 
 
+$(document).ready(async function () {
+    adicionarItensNavbar(navbarItems);
+    
+    const html = await getHtml("cards/produtos.html")
+    $("#principal").html(html)
+});
 
 function criarItem(item) {
     const $item = $(/*html*/ `

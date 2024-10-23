@@ -1,14 +1,14 @@
 $(document).ready(async () => {
-    // Carrega os produtos antes de montar a tabela e adicionar ao DOM
-    await carregarProdutos();
+    // Carrega os fornecedores antes de montar a tabela e adicionar ao DOM
+    await carregarFornecedores();
 });
 
-async function carregarProdutos() {
+async function carregarFornecedores() {
     try {
-        // Faz a requisição AJAX para obter os produtos
+        // Faz a requisição AJAX para obter os fornecedores
         const response = await $.ajax({
             type: "GET",
-            url: `${host}/products/getProducts`,
+            url: `${host}/fornecedores/getFornecedores`,
             dataType: "json",
         });
 
@@ -16,16 +16,16 @@ async function carregarProdutos() {
 
         if (!response.error) {
             // Inicializa a tabela com os dados recebidos
-            dataTable_produtos(response.produtos);
+            dataTable_fornecedores(response.fornecedores);
         } else {
             console.error("Erro na resposta: ", response.message);
         }
     } catch (error) {
-        console.error("Erro ao carregar produtos: ", error);
+        console.error("Erro ao carregar fornecedores: ", error);
         $("#principal").html(
             $(`
             <div class="alert alert-danger" role="alert">
-                <h4 class="alert-heading">Produtos não Encontrados</h4>
+                <h4 class="alert-heading">Fornecedores não Encontrados</h4>
                 <p>Se voce está vendo essa mensagem, por favor entre em contato com o suporte</p>
                 <hr />
                 <p class="mb-0"><a href="mailto:suporte@urbanFarm.com">suporte@urbanFarm.com</a></p>
@@ -35,19 +35,20 @@ async function carregarProdutos() {
     }
 }
 
-function dataTable_produtos(produtos) {
+function dataTable_fornecedores(fornecedores) {
     // Cria o HTML da tabela
     let tabelaHtml = /*html*/ `
-        <table id="table-produtos" class="display">
+        <table id="table-fornecedores" class="display">
             <thead>
                 <tr>
-                    <th>Imagem</th>
                     <th>Nome</th>
                     <th>
-                        <span class="full-label">Quantidade</span>
-                        <span class="mobile-label">Qntd</span>
+                        <span class="full-label">Telefone</span>
+                        <span class="mobile-label">Tel.</span>
                     </th>
-                    <th>Ações</th>
+                    <th>Email</th>
+                    <th>Site</th>
+                    <th>Ação</th>
                 </tr>
             </thead>
             <tbody></tbody>
@@ -56,32 +57,38 @@ function dataTable_produtos(produtos) {
     `;
 
     // Adiciona o HTML da tabela ao container principal antes de inicializar o DataTable
-    $("#div-tabela-produtos").html(tabelaHtml);
+    $("#div-tabela-fornecedores").html(tabelaHtml);
 
     const isMobile = window.innerWidth <= 768;
 
-    // Inicializa o DataTable com os produtos
-    $("#table-produtos").DataTable({
-        data: produtos,
+    // Inicializa o DataTable com os fornecedores
+    $("#table-fornecedores").DataTable({
+        data: fornecedores,
         responsive: true,
         paging: !isMobile,
         scrollY: isMobile ? "400px" : false,
         scrollCollapse: isMobile,
         info: !isMobile,
+        pageLength: 5,
+        lengthMenu: [5, 10, 25, 50, 100],
         language: {
             url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json", // URL para o arquivo de tradução para português
         },
         columns: [
-            {
-                data: "linkImg", // Supondo que exista uma propriedade 'imagem' nos produtos
-                render: function (data) {
-                    return data
-                        ? `<img src="${data}" alt="Imagem do Produto" style="width: 50px; height: 50px;">`
-                        : `<span class="fa-regular fa-image fa-xl" style="padding-left:12px"></span>`;
-                },
-            },
             { data: "nome" },
-            { data: "quantidade" },
+            { data: "telefone" },
+            { 
+                data: "email",
+                render: function (data) {
+                    return `<a href="mailto:${data}">${data}</a>`
+                }
+            },
+            { 
+                data: "site",
+                render: function (data) {
+                    return `<a href="https://${data}" target="blank">${data}</a>`
+                }
+            },
             {
                 data: null,
                 orderable: false,
@@ -102,32 +109,32 @@ function dataTable_produtos(produtos) {
     });
 
     // Delegação de eventos para os botões de editar e deletar
-    $("#div-tabela-produtos").on("click", ".btn-editar", function () {
-        const data = $("#table-produtos")
+    $("#div-tabela-fornecedores").on("click", ".btn-editar", function () {
+        const data = $("#table-fornecedores")
             .DataTable()
             .row($(this).parents("tr"))
             .data();
-        editarProduto(data);
+        editarFornecedor(data);
     });
 
-    $("#div-tabela-produtos").on("click", ".btn-deletar", function () {
-        const data = $("#table-produtos")
+    $("#div-tabela-fornecedores").on("click", ".btn-deletar", function () {
+        const data = $("#table-fornecedores")
             .DataTable()
             .row($(this).parents("tr"))
             .data();
-        deletarProduto(data);
+        deletarFornecedor(data);
     });
 }
 
-function editarProduto(produto) {
-    // Lógica para editar o produto
-    console.log("Editar produto:", produto);
-    abrirModalProduto(produto);
+function editarFornecedor(fornecedor) {
+    // Lógica para editar o fornecedor
+    console.log("Editar fornecedor:", fornecedor);
+    abrirModalFornecedor(fornecedor);
 }
 
-function deletarProduto(produto) {
-    // Lógica para deletar o produto
-    console.log(produto);
+function deletarFornecedor(fornecedor) {
+    // Lógica para deletar o fornecedor
+    console.log(fornecedor);
     Swal.fire({
         title: `Voce tem certeza que deseja deletar este item?`,
         text: "Essa ação não é reversivel",
@@ -141,12 +148,12 @@ function deletarProduto(produto) {
         if (result.isConfirmed) {
             $.ajax({
                 type: "DELETE",
-                url: `${host}/products/deleteProduct/${produto.id}`,
+                url: `${host}/fornecedores/deleteFornecedor/${fornecedor.id}`,
                 contentType: "application/json",
             })
                 .done(function (response) {
                     console.log(response);
-                    carregarProdutos();
+                    carregarFornecedores();
                 })
                 .fail(function (error) {
                     console.error(error);
@@ -156,9 +163,9 @@ function deletarProduto(produto) {
 }
 
 // Função para abrir o modal e preencher os dados
-function abrirModalProduto(produto = {}) {
+function abrirModalFornecedor(fornecedor = {}) {
 
-    var modalInstance = bootstrap.Modal.getInstance($("#modalProduto")[0]);
+    var modalInstance = bootstrap.Modal.getInstance($("#modalFornecedor")[0]);
 
     // Verifica se já existe uma instância do modal e a descarta
     if (modalInstance) {
@@ -166,57 +173,59 @@ function abrirModalProduto(produto = {}) {
     }
 
 
-    // Se o produto estiver vazio, estamos adicionando um novo item
-    const isEdit = produto && produto.id;
+    // Se o fornecedor estiver vazio, estamos adicionando um novo item
+    const isEdit = fornecedor && fornecedor.id;
 
     // Ajustar o título do modal
-    const modalTitle = isEdit ? "Editar Produto" : "Adicionar Produto";
-    $("#modalProdutoLabel").text(modalTitle);
+    const modalTitle = isEdit ? "Editar Fornecedor" : "Adicionar Fornecedor";
+    $("#modalFornecedorLabel").text(modalTitle);
 
     // Preencher os campos do modal
-    $("#produtoId").val(produto.id || "");
-    $("#produtoNome").val(produto.nome || "");
-    $("#produtoQuantidade").val(produto.quantidade || "");
-    $("#produtoLinkImg").val(produto.linkImg || "");
+    $("#fornecedorId").val(fornecedor.id || "");
+    $("#fornecedorNome").val(fornecedor.nome || "");
+    $("#fornecedorTelefone").val(fornecedor.telefone || "");
+    $("#fornecedorEmail").val(fornecedor.email || "");
+    $("#fornecedorSite").val(fornecedor.site || "");
 
     // Exibir o modal
-    const modal = new bootstrap.Modal(document.getElementById("modalProduto"));
+    const modal = new bootstrap.Modal(document.getElementById("modalFornecedor"));
     modal.show();
 }
 
-// Evento de clique para salvar o produto
-$("#salvarProduto").on("click", function () {
-    const produto = {
-        idProduto: $("#produtoId").val(),
-        nome: $("#produtoNome").val(),
-        qnt: $("#produtoQuantidade").val(),
-        linkImg: $("#produtoLinkImg").val(),
+// Evento de clique para salvar o fornecedor
+$("#salvarFornecedor").on("click", function () {
+    const fornecedor = {
+        idFornecedor: $("#fornecedorId").val(),
+        nome: $("#fornecedorNome").val(),
+        telefone: $("#fornecedorTelefone").val(),
+        email: $("#fornecedorEmail").val(),
+        site: $("#fornecedorSite").val(),
     };
 
     let type = "";
     let url = "";
-    if (produto.idProduto) {
+    if (fornecedor.idFornecedor) {
         type = "PUT";
-        url = `${host}/products/editProduct/${produto.idProduto}`;
+        url = `${host}/fornecedores/editFornecedor/${fornecedor.idFornecedor}`;
     } else {
         type = "POST";
-        url = `${host}/products/newProduct`;
+        url = `${host}/fornecedores/newFornecedor`;
     }
     $.ajax({
         type: type,
         url: url,
-        data: JSON.stringify(produto),
+        data: JSON.stringify(fornecedor),
         contentType: "application/json",
     })
         .done(function (response) {
             console.log(response);
-            carregarProdutos();
+            carregarFornecedores();
         })
         .fail(function (error) {
             console.error(error);
         });
-    console.log("Produto atualizado:", produto);
+    console.log("Fornecedor atualizado:", fornecedor);
 
     // Fechar o modal após salvar
-    $("#modalProduto").modal("hide");
+    $("#modalFornecedor").modal("hide");
 });

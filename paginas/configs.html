@@ -168,12 +168,3 @@
         </div>
     </body>
 </html>
-<script>
-    // Chame a função após o DOM estar carregado
-    $(document).ready(async function () {
-        adicionarItensNavbar(navbarItems);
-        
-        const html = await getHtml("cards/funcionarios.html")
-        $("#principal").html(html)
-    });
-</script>

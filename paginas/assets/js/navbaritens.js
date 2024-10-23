@@ -27,7 +27,7 @@ const navbarItems = [
             },
         ],
         funcao: async function () {
-            const html = await getHtml("cards/funcionarios.html")
+            const html = await getHtml("cards/produtos.html")
             $("#principal").html(html)
         },
     },
@@ -50,6 +50,10 @@ const navbarItems = [
                 },
             },
         ],
+        funcao: async function () {
+            const html = await getHtml("cards/fornecedores.html")
+            $("#principal").html(html)
+        },
     },
     {
         nome: "Usuários",

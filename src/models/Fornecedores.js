@@ -1,11 +1,11 @@
 import { response } from "express";
 import banco from "../config/dbConnect.js";
 
-class Products {
-    static getProducts() {
+class Fornecedores {
+    static getFornecedores() {
         return new Promise((resolve, reject) => {
             banco.query(
-                "SELECT * FROM produtos ORDER BY id DESC",
+                "SELECT * FROM fornecedores ORDER BY id DESC",
                 (err, results, fields) => {
                     if (err) {
                         console.error("Erro ao consultar banco de dados:", err);
@@ -17,10 +17,10 @@ class Products {
         });
     }
     
-    static getProduct(id) {
+    static getFornecedor(id) {
         return new Promise((resolve, reject) => {
             banco.query(
-                    "SELECT * FROM produtos WHERE id = ?",
+                "SELECT * FROM fornecedores WHERE id = ?",
                 [id],
                 (err, results, fields) => {
                     if (err) {
@@ -33,11 +33,11 @@ class Products {
         });
     }
     
-    static newProduct(nome, qnt = 0, linkImg = null) {
+    static newFornecedor(nome, telefone = null, email = null, site = null) {
         return new Promise((resolve, reject) => {
             banco.query(
-                "INSERT INTO produtos (nome, quantidade, linkImg) VALUES (?, ?, ?)",
-                [nome, qnt, linkImg],
+                "INSERT INTO fornecedores (nome, telefone, email, site) VALUES (?, ?, ?, ?)",
+                [nome, telefone, email, site],
                 (err, results, fields) => {
                     if (err) {
                         console.error("Erro ao inserir dados:", err);
@@ -49,13 +49,14 @@ class Products {
         });
     }
     
-    static editProduct(id, nome, qnt, linkImg) {
+    static editFornecedor(id, nome = null, telefone = null, email = null, site = null) {
         return new Promise((resolve, reject) => {
             
             const columns = [
                 { name: "nome", value: nome },
-                { name: "quantidade", value: qnt },
-                { name: "linkImg", value: linkImg },
+                { name: "telefone", value: telefone },
+                { name: "email", value: email },
+                { name: "site", value: site },
             ].filter((col) => col.value != null); 
             
             
@@ -74,11 +75,12 @@ class Products {
             
             const sql = `
             UPDATE 
-                produtos 
+                fornecedores 
             SET 
                 ${colsAtualizar} 
             WHERE 
                 id = ?
+            LIMIT 1
         `;
             
             
@@ -95,10 +97,10 @@ class Products {
         });
     }
     
-    static deleteProduct(id) {
+    static deleteFornecedor(id) {
         return new Promise((resolve, reject) => {
             banco.query(
-                "DELETE FROM produtos WHERE id = ? LIMIT 1",
+                "DELETE FROM fornecedores WHERE id = ? LIMIT 1",
                 [id],
                 (err, results, fields) => {
                     if (err) {
@@ -112,4 +114,4 @@ class Products {
     }
 }
 
-export default Products;
+export default Fornecedores;

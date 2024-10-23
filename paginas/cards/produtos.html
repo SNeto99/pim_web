@@ -1,0 +1,64 @@
+<div class="card" id="produtos">
+    <div class="card-header">Produtos cadastrados</div>
+    <div class="card-body table-responsive">
+        <div class="row" id="div-tabela-produtos">
+            <!-- TABELA -->
+        </div>
+        <div class="row">
+            <div class="d-flex justify-content-center">
+                <button class="btn btn-success botaoAdd" onclick="abrirModalProduto();">
+                    <span class="fa fa-plus"></span> 
+                    Adicionar Produtos
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modalbs modalAddProdutos">
+    <!-- Modal -->
+    <div class="modal fade" id="modalProduto" tabindex="-1" aria-labelledby="modalProdutoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalProdutoLabel">
+                        Adicionar/Editar Produto
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formProduto">
+                        <input type="hidden" id="produtoId" />
+                        <div class="mb-3">
+                            <label for="produtoNome" class="form-label">
+                                Nome
+                            </label>
+                            <input type="text" class="form-control" id="produtoNome"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="produtoQuantidade" class="form-label">
+                                Quantidade
+                            </label>
+                            <input type="number" class="form-control" id="produtoQuantidade"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="produtoLinkImg" class="form-label">
+                                Link da Imagem
+                            </label>
+                            <input type="text" class="form-control" id="produtoLinkImg"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Cancelar
+                    </button>
+                    <button type="button" class="btn btn-primary" id="salvarProduto">
+                        Salvar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="cards/produtos.js"></script>
