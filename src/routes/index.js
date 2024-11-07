@@ -2,7 +2,8 @@ import express from "express";
 import userRoutes from "./userRoutes.js";
 import productsRoutes from "./productsRoutes.js";
 import fornecedoresRoutes from "./fornecedoresRoutes.js";
-import appRoutes from "./appRoutes.js";
+import pagesRoutes from "./pagesRoutes.js" 
+import cartRoutes from "./cartRoutes.js"; 
 
 
 const routes = (app) => {
@@ -13,10 +14,11 @@ const routes = (app) => {
         res.status(200).send("Hello World!!!");
     });
 
-    app.use("/", express.json(), appRoutes);
+    app.use("/", express.json(), pagesRoutes);
     app.use("/products", express.json(), productsRoutes);
     app.use("/fornecedores", express.json(), fornecedoresRoutes);
     app.use("/users", express.json(), userRoutes);
+    app.use("/cart", express.json(), cartRoutes);
 
 };
 

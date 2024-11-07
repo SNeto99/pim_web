@@ -33,11 +33,11 @@ class Products {
         });
     }
     
-    static newProduct(nome, qnt = 0, linkImg = null) {
+    static newProduct(nome, qnt, descricao, linkImg, preco) {
         return new Promise((resolve, reject) => {
             banco.query(
-                "INSERT INTO produtos (nome, quantidade, linkImg) VALUES (?, ?, ?)",
-                [nome, qnt, linkImg],
+                "INSERT INTO produtos (nome, quantidade, descricao, linkImg, preco) VALUES (?, ?, ?, ?, ?)",
+                [nome, qnt, descricao, linkImg, preco],
                 (err, results, fields) => {
                     if (err) {
                         console.error("Erro ao inserir dados:", err);
@@ -49,13 +49,15 @@ class Products {
         });
     }
     
-    static editProduct(id, nome, qnt, linkImg) {
+    static editProduct(id, nome, qnt, descricao, linkImg, preco) {
         return new Promise((resolve, reject) => {
             
             const columns = [
                 { name: "nome", value: nome },
                 { name: "quantidade", value: qnt },
+                { name: "descricao", value: descricao },
                 { name: "linkImg", value: linkImg },
+                { name: "preco", value: preco },
             ].filter((col) => col.value != null); 
             
             

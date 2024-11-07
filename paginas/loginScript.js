@@ -1,46 +1,52 @@
-
-const ENDPOINT = "./users";
-
+const HOST = ".";
 
 $(document).on("submit", "#loginForm", function (event) {
     event.preventDefault();
 
-    var formDataArray = $(this).serializeArray(); 
-    var formData = formDataArray.reduce(function (obj, item) {
-        obj[item.name] = item.value;
-        return obj;
-    }, {});
+    var formData = {
+        userInput: $("#userInput").val(),
+        passwordInput: $("#passwordInput").val()
+    };
 
-    console.log(formData);
-
-    var jsonFormData = JSON.stringify(formData); // Converte o objeto para JSON
-
-    
     $.ajax({
-        url: ENDPOINT+"/login", 
-        type: "POST", 
-        contentType: "application/json", 
-        data: jsonFormData, 
+        url: `${HOST}/users/login`,
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(formData),
         success: function (response) {
-            console.log(response)
-
-            sessionStorage.setItem("idUser", response.id);
+            console.log('Login response:', response);
+            
+            localStorage.setItem('userId', response.id);
 
             Swal.fire({
                 title: "Login efetuado com sucesso!",
                 icon: "success"
-            })
-            // window.location.href = "/appdenotas/app";
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const returnTo = localStorage.getItem('returnTo');
+                    if (returnTo) {
+                        localStorage.removeItem('returnTo');
+                        window.location.href = returnTo;
+                    } else {
+                        window.location.href = "/";
+                    }
+                }
+            });
         },
         error: function (xhr, status, error) {
-            Swal.fire(
-                "Erro!",
-                "Não foi possível realizar o cadastro: " + xhr.responseText,
-                "error"
-            );
-        },
+            console.error('Login error:', error);
+            Swal.fire({
+                icon: "error",
+                title: "Erro!",
+                text: "Não foi possível realizar o login: " + (xhr.responseText || "Erro desconhecido")
+            });
+        }
     });
 });
+
+function irParaCadastro() {
+    window.location.href = '/cadastro';
+}
 
 function togglePasswordVisibility(inputId) {
     var input = document.getElementById(inputId);

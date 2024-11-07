@@ -36,9 +36,9 @@ class ProductsController {
 
 
     static newProduct(req, res) {
-        const { nome, qnt, linkImg } = req.body;
+        const { nome, qnt, descricao, linkImg, preco } = req.body;
 
-        Products.newProduct(nome, qnt, linkImg)
+        Products.newProduct(nome, qnt, descricao, linkImg, preco)
             .then((idProduto) =>
                 res.status(200).json({ status: "ok", idProduto: idProduto })
             )
@@ -51,9 +51,9 @@ class ProductsController {
 
     static editProduct(req, res) {
         const idProduto = req.params.id;
-        const { nome, qnt, linkImg } = req.body;
+        const { nome, qnt, descricao, linkImg, preco } = req.body;
 
-        Products.editProduct(idProduto, nome, qnt, linkImg)
+        Products.editProduct(idProduto, nome, qnt, descricao, linkImg, preco)
             .then((affectedRows) => {
                 affectedRows
                 ? res.status(200).json({ status: "ok" })

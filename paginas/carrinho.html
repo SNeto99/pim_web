@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrinho de Compras</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .cart-item {
+            margin-bottom: 1.5rem;
+        }
+        .cart-total {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #28a745;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="my-4">Carrinho de Compras</h1>
+        <div id="cartItems" class="mb-5">
+            <!-- Os itens do carrinho serão inseridos aqui via JavaScript -->
+        </div>
+        <div class="cart-total">
+            Total: <span id="cartTotal">R$ 0,00</span>
+        </div>
+        <button class="btn btn-success btn-block my-4">Finalizar Compra</button>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        // const HOST = "http://192.168.0.14:3005";
+        const HOST = ".";
+        const userId = localStorage.getItem('userId');
+
+        $(document).ready(function() {
+            if (!userId) {
+                Swal.fire({
+                    icon: "info",
+                    title: "Login Necessário",
+                    text: "Por favor, faça login para acessar o carrinho",
+                    confirmButtonText: "Ir para Login"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        localStorage.setItem("returnTo", "/carrinho");
+                        window.location.href = "/login";
+                    } else {
+                        window.location.href = "/";
+                    }
+                });
+                return;
+            }
+            carregarCarrinho();
+        });
+
+        function carregarCarrinho() {
+            $.ajax({
+                url: `${HOST}/cart/getItems/${userId}`,
+                method: "GET",
+                success: function(response) {
+                    const cartItemsContainer = $("#cartItems").empty();
+                    let total = 0;
+                    
+                    response.items.forEach(item => {
+                        const itemTotal = item.preco * item.quantidade;
+                        total += itemTotal;
+                        
+                        const cartItem = /*html*/`
+                            <div class="cart-item row align-items-center">
+                                <div class="col-md-3">
+                                    <img src="${item.linkImg || './assets/default.png'}" class="img-fluid" alt="${item.nome}">
+                                </div>
+                                <div class="col-md-3">
+                                    <h5>${item.nome}</h5>
+                                    <p>Preço: R$ ${item.preco.toFixed(2).replace('.', ',')}</p>
+                                </div>
+                                <div class="col-md-3">
+                                    <input type="number" class="form-control" min="1" value="${item.quantidade}" onchange="atualizarQuantidade(${item.product_id}, this.value)">
+                                </div>
+                                <div class="col-md-2">
+                                    <p>Subtotal: R$ ${itemTotal.toFixed(2).replace('.', ',')}</p>
+                                </div>
+                                <div class="col-md-1">
+                                    <button class="btn btn-danger btn-sm" onclick="removerItem(${item.product_id})">Remover</button>
+                                </div>
+                            </div>
+                        `;
+                        cartItemsContainer.append(cartItem);
+                    });
+
+                    $("#cartTotal").text(`R$ ${total.toFixed(2).replace('.', ',')}`);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erro ao carregar o carrinho:", error);
+                }
+            });
+        }
+
+        function atualizarQuantidade(productId, quantidade) {
+            $.ajax({
+                url: `${HOST}/cart/updateQuantity`,
+                method: "PUT",
+                contentType: "application/json",
+                data: JSON.stringify({ userId, productId, quantity: parseInt(quantidade) }),
+                success: function() {
+                    carregarCarrinho();
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erro ao atualizar quantidade:", error);
+                }
+            });
+        }
+
+        function removerItem(productId) {
+            $.ajax({
+                url: `${HOST}/cart/removeItem`,
+                method: "DELETE",
+                contentType: "application/json",
+                data: JSON.stringify({ userId, productId }),
+                success: function() {
+                    carregarCarrinho();
+                },
+                error: function(xhr, status, error) {
+                    console.error("Erro ao remover item:", error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

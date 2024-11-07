@@ -10,24 +10,28 @@ const __dirname = dirname(__filename);
 
 
 
-const appRoutes = express.Router();
+const pagesRoutes = express.Router();
 
 
 
-appRoutes.get("/", (req, res) => {
+pagesRoutes.get("/", (req, res) => {
     res.status(200).sendFile(path.join(__dirname, "../../paginas/loja.html"));
 });
 
-appRoutes.get("/login", (req, res) => {
+pagesRoutes.get("/login", (req, res) => {
     res.status(200).sendFile(path.join(__dirname, "../../paginas/login.html"));
 });
 
-appRoutes.get("/cadastro", (req, res) => {
+pagesRoutes.get("/cadastro", (req, res) => {
     res.status(200).sendFile(path.join(__dirname, "../../paginas/cadastro.html"));
 });
 
-appRoutes.get("/configs", (req, res) => {
+pagesRoutes.get("/configs", (req, res) => {
     res.status(200).sendFile(path.join(__dirname, "../../paginas/configs.html"));
 });
 
-export default appRoutes;
+pagesRoutes.get("/carrinho", (req, res) => {
+    res.status(200).sendFile(path.join(__dirname, "../../paginas/carrinho.html"));
+});
+
+export default pagesRoutes;

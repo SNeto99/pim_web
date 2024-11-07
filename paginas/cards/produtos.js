@@ -36,13 +36,13 @@ async function carregarProdutos() {
 }
 
 function dataTable_produtos(produtos) {
-    // Cria o HTML da tabela
     let tabelaHtml = /*html*/ `
         <table id="table-produtos" class="display">
             <thead>
                 <tr>
                     <th>Imagem</th>
                     <th>Nome</th>
+                    <th>Preço</th>
                     <th>
                         <span class="full-label">Quantidade</span>
                         <span class="mobile-label">Qntd</span>
@@ -52,15 +52,12 @@ function dataTable_produtos(produtos) {
             </thead>
             <tbody></tbody>
         </table>
-            
     `;
 
-    // Adiciona o HTML da tabela ao container principal antes de inicializar o DataTable
     $("#div-tabela-produtos").html(tabelaHtml);
 
     const isMobile = window.innerWidth <= 768;
 
-    // Inicializa o DataTable com os produtos
     $("#table-produtos").DataTable({
         data: produtos,
         responsive: true,
@@ -71,11 +68,11 @@ function dataTable_produtos(produtos) {
         pageLength: 5,
         lengthMenu: [5, 10, 25, 50, 100],
         language: {
-            url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json", // URL para o arquivo de tradução para português
+            url: "//cdn.datatables.net/plug-ins/1.11.5/i18n/pt-BR.json",
         },
         columns: [
             {
-                data: "linkImg", // Supondo que exista uma propriedade 'imagem' nos produtos
+                data: "linkImg",
                 orderable: false,
                 render: function (data) {
                     return data
@@ -83,7 +80,25 @@ function dataTable_produtos(produtos) {
                         : `<span class="fa-regular fa-image fa-xl" style="padding-left:12px"></span>`;
                 },
             },
-            { data: "nome" },
+            { 
+                data: null,
+                render: function(data) {
+                    const temDescricao = data.descricao && data.descricao.trim() !== '';
+                    return /*html*/`
+                        ${data.nome}
+                        <i class="fas fa-info-circle ms-2" 
+                           style="cursor: ${temDescricao ? 'pointer' : 'not-allowed'}; opacity: ${temDescricao ? '1' : '0.5'};"
+                           ${temDescricao ? `onclick="mostrarDescricao('${data.nome}', '${data.descricao.replace(/'/g, "\\'")}')"` : ''}
+                        ></i>
+                    `;
+                }
+            },
+            { 
+                data: "preco",
+                render: function(data) {
+                    return data ? `R$ ${parseFloat(data).toFixed(2).replace('.', ',')}` : '-';
+                }
+            },
             { data: "quantidade" },
             {
                 data: null,
@@ -179,8 +194,14 @@ function abrirModalProduto(produto = {}) {
     // Preencher os campos do modal
     $("#produtoId").val(produto.id || "");
     $("#produtoNome").val(produto.nome || "");
+    $("#produtoPreco").val(produto.preco || "");
     $("#produtoQuantidade").val(produto.quantidade || "");
+    $("#produtoDescricao").val(produto.descricao || "");
     $("#produtoLinkImg").val(produto.linkImg || "");
+
+    // Atualizar contador de caracteres
+    const textarea = document.getElementById('produtoDescricao');
+    atualizarContador(textarea);
 
     // Exibir o modal
     const modal = new bootstrap.Modal(document.getElementById("modalProduto"));
@@ -192,7 +213,9 @@ $("#salvarProduto").on("click", function () {
     const produto = {
         idProduto: $("#produtoId").val(),
         nome: $("#produtoNome").val(),
-        qnt: $("#produtoQuantidade").val(),
+        preco: parseFloat($("#produtoPreco").val()) || 0,
+        qnt: parseInt($("#produtoQuantidade").val()) || 0,
+        descricao: $("#produtoDescricao").val(),
         linkImg: $("#produtoLinkImg").val(),
     };
 
@@ -205,21 +228,68 @@ $("#salvarProduto").on("click", function () {
         type = "POST";
         url = `${host}/products/newProduct`;
     }
+
+    // Padroniza os dados para envio
+    const dadosParaEnviar = {
+        nome: produto.nome,
+        qnt: produto.qnt,
+        descricao: produto.descricao,
+        linkImg: produto.linkImg,
+        preco: produto.preco
+    };
+
     $.ajax({
         type: type,
         url: url,
-        data: JSON.stringify(produto),
+        data: JSON.stringify(dadosParaEnviar),
         contentType: "application/json",
     })
-        .done(function (response) {
-            console.log(response);
-            carregarProdutos();
-        })
-        .fail(function (error) {
-            console.error(error);
+    .done(function (response) {
+        console.log(response);
+        carregarProdutos();
+        $("#modalProduto").modal("hide");
+        Swal.fire({
+            icon: "success",
+            title: "Sucesso",
+            text: produto.idProduto ? "Produto atualizado com sucesso!" : "Produto adicionado com sucesso!",
+            timer: 1500,
+            showConfirmButton: false
         });
-    console.log("Produto atualizado:", produto);
-
-    // Fechar o modal após salvar
-    $("#modalProduto").modal("hide");
+    })
+    .fail(function (error) {
+        console.error(error);
+        Swal.fire({
+            icon: "error",
+            title: "Erro",
+            text: "Não foi possível salvar o produto"
+        });
+    });
 });
+
+// Adicionar função para contar caracteres
+function atualizarContador(textarea) {
+    const maxLength = textarea.maxLength;
+    const currentLength = textarea.value.length;
+    const remaining = maxLength - currentLength;
+    document.getElementById('caracteresRestantes').textContent = remaining;
+}
+
+// Adicionar função para mostrar a descrição em um modal
+function mostrarDescricao(nome, descricao) {
+    Swal.fire({
+        title: nome,
+        html: `
+            <div class="p-3">
+                <div class="form-control text-start" 
+                     style="min-height: 100px; background-color: #f8f9fa; resize: none; cursor: default;">
+                    ${descricao}
+                </div>
+            </div>
+        `,
+        showClass: {
+            popup: 'animate__animated animate__fadeIn'
+        },
+        confirmButtonText: 'Fechar',
+        confirmButtonColor: '#6c757d'
+    });
+}

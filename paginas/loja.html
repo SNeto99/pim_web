@@ -1,52 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Produtos - Urban Farm</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
     <style>
         body {
             background-color: #f8f9fa;
         }
+
         .navbar {
             margin-bottom: 2rem;
         }
+
         .product-card {
             margin-bottom: 2rem;
         }
+
         .product-card img {
-            height: 200px;
-            object-fit: cover;
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            max-height: 200px;
         }
+
         .product-title {
             font-size: 1.25rem;
             font-weight: 500;
         }
+
         .product-price {
             font-size: 1rem;
             font-weight: 700;
             color: #28a745;
         }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-controls button {
+            width: 30px;
+            height: 30px;
+            padding: 0;
+        }
+
+        .quantity-controls input {
+            width: 50px;
+            text-align: center;
+            margin: 0 5px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            height: 30px;
+        }
     </style>
 </head>
+
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Urban Farm</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <a class="navbar-brand" href=".">Urban Farm</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <form class="form-inline my-2 my-lg-0 ml-auto">
-                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-            </form>
             <ul class="navbar-nav ml-3">
                 <li class="nav-item">
                     <a class="nav-link" href="./login">Login</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="./configs">Cart 🛒</a>
+                    <a class="nav-link" href="#" id="cartIcon">Carrinho 🛒 <span id="cartItemCount">0</span></a>
                 </li>
             </ul>
         </div>
@@ -54,87 +83,56 @@
     <div class="container">
         <div class="row">
             <div class="col-md-3">
-                <!-- Sidebar com filtros (pode ser adicionado depois) -->
-                <div class="sidebar">
+                <div class="sidebar mb-5">
                     <h5>Filtros</h5>
-                    <div class="form-group">
-                        <label for="priceRange">Faixa de Preço</label>
-                        <input type="range" class="form-control-range" id="priceRange">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Filtro por preço -->
+                            <div class="mb-3">
+                                <label class="form-label">Preço</label>
+                                <div class="d-flex gap-2">
+                                    <input type="number" class="form-control form-control-sm" id="precoMin" placeholder="Mín">
+                                    <input type="number" class="form-control form-control-sm" id="precoMax" placeholder="Máx">
+                                </div>
+                            </div>
+
+                            <!-- Filtro por disponibilidade -->
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="mostrarDisponiveis">
+                                    <label class="form-check-label" for="mostrarDisponiveis">
+                                        Apenas produtos disponíveis
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Campo de busca -->
+                            <div class="mb-3">
+                                <label class="form-label">Buscar produto</label>
+                                <input type="text" class="form-control form-control-sm" id="buscarProduto" placeholder="Digite o nome do produto">
+                            </div>
+
+                            <!-- Botões de ação -->
+                            <div class="d-flex">
+                                <button class="btn btn-primary btn-sm flex-fill mx-1" onclick="aplicarFiltros()">Aplicar Filtros</button>
+                                <button class="btn btn-secondary btn-sm flex-fill mx-1" onclick="limparFiltros()">Limpar Filtros</button>
+                            </div>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="categorySelect">Categoria</label>
-                        <select class="form-control" id="categorySelect">
-                            <option>Todos</option>
-                            <option>Frutas</option>
-                            <option>Vegetais</option>
-                            <option>Legumes</option>
-                            <option>Orgãnicos</option>
-                        </select>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="organicCheck">
-                        <label class="form-check-label" for="organicCheck">
-                            Orgãnicos
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" value="" id="promoCheck">
-                        <label class="form-check-label" for="promoCheck">
-                            Promoções
-                        </label>
-                    </div>
-                    <button class="btn btn-outline-primary btn-block mt-4">Aplicar Filtros</button>
                 </div>
             </div>
             <div class="col-md-9">
-                <div class="row">
-                    <div class="col-md-4 product-card">
-                        <div class="card">
-                            <img src="./assets/imgs/rabanete.png" class="card-img-top" alt="Rabanete">
-                            <div class="card-body">
-                                <h5 class="product-title">Rabanete</h5>
-                                <p class="product-description">Descrição do produto</p>
-                                <p class="product-price">$XX.YY</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 product-card">
-                        <div class="card">
-                            <img src="./assets/imgs/maca.png" class="card-img-top" alt="MaÃ§Ã£">
-                            <div class="card-body">
-                                <h5 class="product-title">Maçã</h5>
-                                <p class="product-description">Descrição do produto</p>
-                                <p class="product-price">$XX.YY</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 product-card">
-                        <div class="card">
-                            <img src="./assets/imgs/pera.png" class="card-img-top" alt="Pera">
-                            <div class="card-body">
-                                <h5 class="product-title">Pera</h5>
-                                <p class="product-description">Descrição do produto</p>
-                                <p class="product-price">$XX.YY</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4 product-card">
-                        <div class="card">
-                            <img src="./assets/imgs/melancia.png" class="card-img-top" alt="Melancia">
-                            <div class="card-body">
-                                <h5 class="product-title">Melancia</h5>
-                                <p class="product-description">Descrição do produto</p>
-                                <p class="product-price">$XX.YY</p>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Adicione mais produtos aqui -->
+                <div id="productsContainer" class="row">
+                    <!-- Produtos serão carregados aqui -->
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="../lojaScript.js"></script>
 </body>
+
 </html>
