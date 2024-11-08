@@ -175,27 +175,19 @@ function deletarProduto(produto) {
 
 // Função para abrir o modal e preencher os dados
 function abrirModalProduto(produto = {}) {
-
     var modalInstance = bootstrap.Modal.getInstance($("#modalProduto")[0]);
-
-    // Verifica se já existe uma instância do modal e a descarta
     if (modalInstance) {
         modalInstance.dispose();
     }
 
-
-    // Se o produto estiver vazio, estamos adicionando um novo item
     const isEdit = produto && produto.id;
+    $("#modalProdutoLabel").text(isEdit ? "Editar Produto" : "Adicionar Produto");
 
-    // Ajustar o título do modal
-    const modalTitle = isEdit ? "Editar Produto" : "Adicionar Produto";
-    $("#modalProdutoLabel").text(modalTitle);
-
-    // Preencher os campos do modal
+    // Preencher os campos com valores formatados
     $("#produtoId").val(produto.id || "");
     $("#produtoNome").val(produto.nome || "");
-    $("#produtoPreco").val(produto.preco || "");
-    $("#produtoQuantidade").val(produto.quantidade || "");
+    $("#produtoPreco").val(produto.preco ? produto.preco.toString() : "");
+    $("#produtoQuantidade").val(produto.quantidade ? produto.quantidade.toString() : "");
     $("#produtoDescricao").val(produto.descricao || "");
     $("#produtoLinkImg").val(produto.linkImg || "");
 
@@ -210,33 +202,36 @@ function abrirModalProduto(produto = {}) {
 
 // Evento de clique para salvar o produto
 $("#salvarProduto").on("click", function () {
-    const produto = {
-        idProduto: $("#produtoId").val(),
-        nome: $("#produtoNome").val(),
-        preco: parseFloat($("#produtoPreco").val()) || 0,
-        qnt: parseInt($("#produtoQuantidade").val()) || 0,
-        descricao: $("#produtoDescricao").val(),
-        linkImg: $("#produtoLinkImg").val(),
-    };
-
-    let type = "";
-    let url = "";
-    if (produto.idProduto) {
-        type = "PUT";
-        url = `${host}/products/editProduct/${produto.idProduto}`;
-    } else {
-        type = "POST";
-        url = `${host}/products/newProduct`;
+    // Validar campos obrigatórios
+    if (!$("#produtoNome").val().trim()) {
+        Swal.fire({
+            icon: "error",
+            title: "Erro",
+            text: "O nome do produto é obrigatório"
+        });
+        return;
     }
 
-    // Padroniza os dados para envio
+    // Capturar e formatar os dados
     const dadosParaEnviar = {
-        nome: produto.nome,
-        qnt: produto.qnt,
-        descricao: produto.descricao,
-        linkImg: produto.linkImg,
-        preco: produto.preco
+        nome: $("#produtoNome").val().trim(),
+        qnt: $("#produtoQuantidade").val() ? parseInt($("#produtoQuantidade").val()) : 0,
+        descricao: $("#produtoDescricao").val().trim(),
+        linkImg: $("#produtoLinkImg").val().trim(),
+        preco: $("#produtoPreco").val() ? parseFloat($("#produtoPreco").val()) : 0
     };
+
+    // Debug para verificar os dados
+    console.log('Dados sendo enviados:', dadosParaEnviar);
+
+    const produto = {
+        idProduto: $("#produtoId").val()
+    };
+
+    let type = produto.idProduto ? "PUT" : "POST";
+    let url = produto.idProduto 
+        ? `${host}/products/editProduct/${produto.idProduto}`
+        : `${host}/products/newProduct`;
 
     $.ajax({
         type: type,
@@ -245,9 +240,18 @@ $("#salvarProduto").on("click", function () {
         contentType: "application/json",
     })
     .done(function (response) {
-        console.log(response);
+        // Primeiro fechar o modal
+        const modalElement = document.getElementById("modalProduto");
+        const modalInstance = bootstrap.Modal.getInstance(modalElement);
+        modalInstance.hide();
+
+        // Limpar o formulário
+        $("#formProduto")[0].reset();
+        
+        // Recarregar os dados
         carregarProdutos();
-        $("#modalProduto").modal("hide");
+
+        // Mostrar mensagem de sucesso
         Swal.fire({
             icon: "success",
             title: "Sucesso",
@@ -257,7 +261,7 @@ $("#salvarProduto").on("click", function () {
         });
     })
     .fail(function (error) {
-        console.error(error);
+        console.error('Erro ao salvar:', error);
         Swal.fire({
             icon: "error",
             title: "Erro",

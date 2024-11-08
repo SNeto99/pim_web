@@ -38,6 +38,8 @@ class ProductsController {
     static newProduct(req, res) {
         const { nome, qnt, descricao, linkImg, preco } = req.body;
 
+        console.log(nome, qnt, descricao, linkImg, preco);
+        
         Products.newProduct(nome, qnt, descricao, linkImg, preco)
             .then((idProduto) =>
                 res.status(200).json({ status: "ok", idProduto: idProduto })

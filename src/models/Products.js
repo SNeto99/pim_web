@@ -51,41 +51,41 @@ class Products {
     
     static editProduct(id, nome, qnt, descricao, linkImg, preco) {
         return new Promise((resolve, reject) => {
+            // Converter e validar os dados
+            const precoNumerico = preco !== undefined ? parseFloat(preco) : null;
+            const quantidadeNumerica = qnt !== undefined ? parseInt(qnt) : null;
             
-            const columns = [
-                { name: "nome", value: nome },
-                { name: "quantidade", value: qnt },
-                { name: "descricao", value: descricao },
-                { name: "linkImg", value: linkImg },
-                { name: "preco", value: preco },
-            ].filter((col) => col.value != null); 
-            
-            
-            if (columns.length === 0) {
-                return reject(new Error("Nenhum dado a ser atualizado."));
-            }
-            
-            
-            const colsAtualizar = columns
-            .map((col) => `${col.name} = ?`)
-            .join(", ");
-            
-            
-            const values = columns.map((col) => col.value);
-            
-            
+            // Query SQL direta com todos os campos
             const sql = `
-            UPDATE 
-                produtos 
-            SET 
-                ${colsAtualizar} 
-            WHERE 
-                id = ?
-        `;
+                UPDATE produtos 
+                SET 
+                    nome = ?,
+                    quantidade = ?,
+                    descricao = ?,
+                    linkImg = ?,
+                    preco = ?
+                WHERE id = ?
+            `;
             
-            
-            values.push(id);
-            
+            // Array de valores na ordem correta
+            const values = [
+                nome || null,
+                quantidadeNumerica,
+                descricao || null,
+                linkImg || null,
+                precoNumerico,
+                id
+            ];
+
+            // Debug para verificar os valores
+            console.log('Valores sendo atualizados:', {
+                nome: nome || null,
+                quantidade: quantidadeNumerica,
+                descricao: descricao || null,
+                linkImg: linkImg || null,
+                preco: precoNumerico,
+                id: id
+            });
             
             banco.query(sql, values, (err, results, fields) => {
                 if (err) {
