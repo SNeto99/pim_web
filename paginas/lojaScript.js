@@ -459,7 +459,7 @@ function finalizarCompra() {
 
   // Implementar lógica para finalizar a compra no backend
   // Por exemplo, redirecionar para uma página de checkout
-  window.location.href = "/checkout"; // Ajuste conforme necessário
+  window.location.href = "/carrinho"; // Ajuste conforme necessário
 }
 
 function sincronizarCarrinho() {
