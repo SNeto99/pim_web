@@ -35,10 +35,35 @@
                             <input type="text" class="form-control" id="produtoNome"/>
                         </div>
                         <div class="mb-3">
+                            <label for="produtoPreco" class="form-label">
+                                Preço
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">R$</span>
+                                <input type="number" step="0.01" min="0" class="form-control" id="produtoPreco"/>
+                            </div>
+                        </div>
+                        <div class="mb-3">
                             <label for="produtoQuantidade" class="form-label">
                                 Quantidade
                             </label>
                             <input type="number" class="form-control" id="produtoQuantidade"/>
+                        </div>
+                        <div class="mb-3">
+                            <label for="produtoDescricao" class="form-label">
+                                Descrição
+                                <small class="text-muted">(máximo 500 caracteres)</small>
+                            </label>
+                            <textarea 
+                                class="form-control" 
+                                id="produtoDescricao" 
+                                rows="3" 
+                                maxlength="500"
+                                oninput="atualizarContador(this)"
+                            ></textarea>
+                            <small class="text-muted">
+                                <span id="caracteresRestantes">500</span> caracteres restantes
+                            </small>
                         </div>
                         <div class="mb-3">
                             <label for="produtoLinkImg" class="form-label">

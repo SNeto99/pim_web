@@ -1,4 +1,3 @@
-
 const ENDPOINT = "./users";
 
 
@@ -46,28 +45,31 @@ $(document).on("submit", "#cadastroForm", function (event) {
         return obj;
     }, {});
 
-    console.log(formData);
+    var jsonFormData = JSON.stringify(formData);
 
-    var jsonFormData = JSON.stringify(formData); // Converte o objeto para JSON
-
-    
     $.ajax({
         url: ENDPOINT + "/newUser",
         type: "POST",
         contentType: "application/json",
         data: jsonFormData,
         success: function (response) {
-            console.log(response);
+            // Armazena o ID do usuário no localStorage
+            localStorage.setItem("userId", response.id);
 
-            sessionStorage.setItem("idUser", response.id);
-
-            Swal.fire(
-                "Sucesso!",
-                "Cadastro realizado com sucesso!",
-                "success"
-            ).then((result) => {
+            Swal.fire({
+                title: "Sucesso!",
+                text: "Cadastro realizado com sucesso!",
+                icon: "success"
+            }).then((result) => {
                 if (result.isConfirmed) {
-                    window.location.href = "/appdenotas/app";
+                    // Verifica se há uma página de retorno salva
+                    const returnTo = localStorage.getItem("returnTo");
+                    if (returnTo) {
+                        localStorage.removeItem("returnTo"); // Limpa o returnTo
+                        window.location.href = returnTo;
+                    } else {
+                        window.location.href = "/"; // Ou outra página padrão
+                    }
                 }
             });
         },
