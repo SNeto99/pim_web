@@ -4,6 +4,15 @@ $(document).ready(async () => {
 });
 
 async function carregarFornecedores() {
+    // Mostra o loading
+    Swal.fire({
+        title: 'Carregando fornecedores...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
     try {
         // Faz a requisição AJAX para obter os fornecedores
         const response = await $.ajax({
@@ -12,6 +21,9 @@ async function carregarFornecedores() {
             dataType: "json",
         });
 
+        // Fecha o loading
+        Swal.close();
+
         console.log(response);
 
         if (!response.error) {
@@ -19,9 +31,22 @@ async function carregarFornecedores() {
             dataTable_fornecedores(response.fornecedores);
         } else {
             console.error("Erro na resposta: ", response.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Erro ao carregar fornecedores'
+            });
         }
     } catch (error) {
         console.error("Erro ao carregar fornecedores: ", error);
+        
+        // Fecha o loading e mostra erro
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Não foi possível carregar os fornecedores'
+        });
+
         $("#principal").html(
             $(`
             <div class="alert alert-danger" role="alert">

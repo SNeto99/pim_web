@@ -4,6 +4,15 @@ $(document).ready(async () => {
 });
 
 async function carregarProdutos() {
+    // Mostra o loading
+    Swal.fire({
+        title: 'Carregando produtos...',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
     try {
         // Faz a requisição AJAX para obter os produtos
         const response = await $.ajax({
@@ -12,6 +21,9 @@ async function carregarProdutos() {
             dataType: "json",
         });
 
+        // Fecha o loading
+        Swal.close();
+
         console.log(response);
 
         if (!response.error) {
@@ -19,9 +31,22 @@ async function carregarProdutos() {
             dataTable_produtos(response.produtos);
         } else {
             console.error("Erro na resposta: ", response.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: 'Erro ao carregar produtos'
+            });
         }
     } catch (error) {
         console.error("Erro ao carregar produtos: ", error);
+        
+        // Fecha o loading e mostra erro
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: 'Não foi possível carregar os produtos'
+        });
+
         $("#principal").html(
             $(`
             <div class="alert alert-danger" role="alert">
@@ -212,26 +237,28 @@ $("#salvarProduto").on("click", function () {
         return;
     }
 
-    // Capturar e formatar os dados
-    const dadosParaEnviar = {
+    const produto = {
+        idProduto: $("#produtoId").val(),
         nome: $("#produtoNome").val().trim(),
+        preco: $("#produtoPreco").val() ? parseFloat($("#produtoPreco").val()) : 0,
         qnt: $("#produtoQuantidade").val() ? parseInt($("#produtoQuantidade").val()) : 0,
         descricao: $("#produtoDescricao").val().trim(),
-        linkImg: $("#produtoLinkImg").val().trim(),
-        preco: $("#produtoPreco").val() ? parseFloat($("#produtoPreco").val()) : 0
-    };
-
-    // Debug para verificar os dados
-    console.log('Dados sendo enviados:', dadosParaEnviar);
-
-    const produto = {
-        idProduto: $("#produtoId").val()
+        linkImg: $("#produtoLinkImg").val().trim()
     };
 
     let type = produto.idProduto ? "PUT" : "POST";
     let url = produto.idProduto 
         ? `${host}/products/editProduct/${produto.idProduto}`
         : `${host}/products/newProduct`;
+
+    // Garantir que todos os campos sejam enviados
+    const dadosParaEnviar = {
+        nome: produto.nome,
+        qnt: produto.qnt,
+        descricao: produto.descricao,
+        linkImg: produto.linkImg,
+        preco: produto.preco
+    };
 
     $.ajax({
         type: type,
@@ -261,7 +288,7 @@ $("#salvarProduto").on("click", function () {
         });
     })
     .fail(function (error) {
-        console.error('Erro ao salvar:', error);
+        console.error(error);
         Swal.fire({
             icon: "error",
             title: "Erro",

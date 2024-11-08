@@ -498,20 +498,33 @@ function sincronizarCarrinho() {
 }
 
 function aplicarFiltros() {
-    // Mostra o loading
-    Swal.fire({
-        title: 'Aplicando filtros...',
-        allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading();
-        }
-    });
-
     // Atualiza os valores dos filtros
-    filtrosAtivos.precoMin = $("#precoMin").val() ? parseFloat($("#precoMin").val()) : null;
-    filtrosAtivos.precoMax = $("#precoMax").val() ? parseFloat($("#precoMax").val()) : null;
-    filtrosAtivos.apenasDisponiveis = $("#mostrarDisponiveis").prop("checked");
-    filtrosAtivos.termoBusca = $("#buscarProduto").val().toLowerCase().trim();
+    const novosFiltros = {
+        precoMin: $("#precoMin").val() ? parseFloat($("#precoMin").val()) : null,
+        precoMax: $("#precoMax").val() ? parseFloat($("#precoMax").val()) : null,
+        apenasDisponiveis: $("#mostrarDisponiveis").prop("checked"),
+        termoBusca: $("#buscarProduto").val().toLowerCase().trim()
+    };
+
+    // Verifica se há algum filtro ativo
+    const temFiltrosAtivos = novosFiltros.precoMin !== null ||
+                            novosFiltros.precoMax !== null ||
+                            novosFiltros.apenasDisponiveis ||
+                            novosFiltros.termoBusca !== '';
+
+    // Mostra o loading apenas se houver filtros ativos
+    if (temFiltrosAtivos) {
+        Swal.fire({
+            title: 'Aplicando filtros...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+    }
+
+    // Atualiza os filtros ativos
+    filtrosAtivos = novosFiltros;
 
     // Aplica os filtros
     produtosFiltrados = produtos.filter(produto => {
@@ -537,10 +550,12 @@ function aplicarFiltros() {
     // Atualiza a exibição
     atualizarExibicaoProdutos();
 
-    // Fecha o loading após atualizar a exibição
-    setTimeout(() => {
-        Swal.close();
-    }, 500);
+    // Fecha o loading após atualizar a exibição (apenas se estiver aberto)
+    if (temFiltrosAtivos) {
+        setTimeout(() => {
+            Swal.close();
+        }, 500);
+    }
 }
 
 function limparFiltros() {
