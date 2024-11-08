@@ -59,25 +59,76 @@
             border-radius: 4px;
             height: 30px;
         }
+
+        .navbar {
+            padding: 0.5rem 1rem;
+        }
+
+        .navbar-nav {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem !important;
+        }
+
+        .badge {
+            position: relative;
+            top: -8px;
+            right: -3px;
+            font-size: 0.75rem;
+        }
+
+        .navbar-logo {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-brand {
+                font-size: 1.1rem;
+            }
+            
+            .nav-link {
+                padding: 0.5rem !important;
+            }
+            
+            .badge {
+                font-size: 0.7rem;
+                padding: 0.25em 0.4em;
+            }
+            .navbar-logo {
+                height: 30px;
+            }
+        }
+
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href=".">Urban Farm</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="./login">Login</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#" id="cartIcon">Carrinho 🛒 <span id="cartItemCount">0</span></a>
-                </li>
-            </ul>
+        <a class="navbar-brand d-flex align-items-center" href=".">
+            <img src="./assets/imgs/icon-sm.png" alt="Urban Farm Logo" class="navbar-logo me-2">
+            Urban Farm
+        </a>
+        <div class="navbar-nav ml-auto">
+            <a class="nav-link" href="./login" title="Login">
+                <i class="fa-solid fa-right-to-bracket"></i>
+                <span class="d-none d-lg-inline">Login</span>
+            </a>
+            <a class="nav-link" href="#" id="cartIcon" title="Carrinho">
+                <i class="fa-solid fa-cart-plus"></i>
+                <span class="d-none d-lg-inline">Carrinho</span>
+                <span id="cartItemCount" class="badge badge-pill badge-primary">0</span>
+            </a>
         </div>
     </nav>
     <div class="container">
