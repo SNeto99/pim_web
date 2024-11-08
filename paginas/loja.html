@@ -103,6 +103,14 @@
             .navbar-logo {
                 height: 30px;
             }
+            
+            #sidebarFilters {
+                background: white;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                margin-bottom: 20px;
+            }
         }
 
         .navbar-brand {
@@ -139,9 +147,14 @@
         </div>
     </div>
     <div class="container">
+        <div class="d-md-none mb-3">
+            <button class="btn btn-secondary w-100" type="button" data-toggle="collapse" data-target="#sidebarFilters">
+                <i class="fas fa-filter"></i> Mostrar Filtros
+            </button>
+        </div>
         <div class="row">
             <div class="col-md-3">
-                <div class="sidebar mb-5">
+                <div id="sidebarFilters" class="sidebar mb-5 collapse d-md-block">
                     <h5>Filtros</h5>
                     <div class="card">
                         <div class="card-body">
