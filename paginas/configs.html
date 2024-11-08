@@ -110,6 +110,22 @@
                     width: 100%;
                 }
             }
+
+            .navbar-logo {
+                height: 40px;
+                width: auto;
+            }
+
+            .navbar-brand {
+                display: flex;
+                align-items: center;
+            }
+
+            @media (max-width: 768px) {
+                .navbar-logo {
+                    height: 30px;
+                }
+            }
         </style>
     </head>
     <body>
@@ -127,7 +143,13 @@
                 >
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <a class="navbar-brand" href="#">Urban Farm</a>
+                <a class="navbar-brand d-flex align-items-center" href="loja.html">
+                    <!-- Logo para desktop (esquerda) -->
+                    <img src="./assets/imgs/icon-sm.png" alt="Urban Farm Logo" class="navbar-logo d-none d-md-block me-2">
+                    Urban Farm
+                    <!-- Logo para mobile (direita) -->
+                    <img src="./assets/imgs/icon-sm.png" alt="Urban Farm Logo" class="navbar-logo d-md-none ms-2">
+                </a>
             </div>
         </nav>
 
