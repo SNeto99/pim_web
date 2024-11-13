@@ -39,7 +39,7 @@ class UserController {
 
                 result.isValid
                     ? res.status(200).json({ status: "ok", id: result.idUser })
-                    : res.status(202).json({ status: "error", message: "Usuário não encontrado" })
+                    : res.status(401).json({ status: "error", message: "Usuário não encontrado" })
 
             }).catch((error) =>
                 res
